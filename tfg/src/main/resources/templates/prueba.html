@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>TFG</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/tfg.css">
+
+    <script th:inline="javascript">
+        var need_size = /*[[${need_size}]]*/ '';
+        need_size = JSON.parse(need_size, this);
+    </script>
+
+    
+</head>
+
+<body>
+    <div class="header">
+        <nav>
+            <ul class="barra_nav">
+                <li class="element_barra_nav" id="barra_nav_user"> <a th:href="@{/}"><span th:text="${user.getName()}">Nombre</span>
+                    <span th:text="${user.getSurnames()}">Apellidos</span></a>
+                </li>
+                <li class="element_barra_nav" id="barra_nav_home"><a class="login_title" id="title_barra_nav"
+                        th:href="@{/}">
+                        <p>Home</p>
+                    </a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container" id="up">
+        <h2 id="up-to-date">Vas al dia</h2>
+        <h3>Lecciones por ver</h3>
+        <ul>
+            <li th:each="log : ${need_to_see}"><span class="log-nombre" th:text="${log.getContexto()}">p1 </span>
+            </li>
+        </ul>
+    </div>
+    <script>
+        const h2_text = document.getElementById("up-to-date");
+
+        if (need_size == 0) {
+            h2_text.innerHTML = 'Vas al dia con tus lecciones!';
+        } else if (need_size > 0 && need_size <= 5) {
+            h2_text.innerHTML = 'Vas casi al dia con tus lecciones! Animo!';
+        } else if (need_size > 5) {
+            h2_text.innerHTML = 'Vas muy atrasado con tus lecciones!';
+        }
+    </script>
+
+</body>
+
+</html>

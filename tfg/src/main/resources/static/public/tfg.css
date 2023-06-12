@@ -1,0 +1,88 @@
+/*https://colors.dopely.top/palettes/QswJFH8FRA7*/
+/*https://colors.dopely.top/palettes/TKfaJCIrB4Q*/
+
+html{
+    font-family: Lato sans-serif;
+}
+
+body {
+    background-color: #DFF8CA;
+}
+
+.login-form {
+    padding-block: 10rem;
+    padding-left: 23%;
+    padding-right: 20%;
+}
+
+.header {
+    z-index: 100;
+    background-color: #71B27E;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.barra_nav {
+    padding-top: 0.7rem;
+    list-style: none;
+    width: inherit;
+    overflow: hidden;
+    text-align: center;
+    height: fit-content;
+}
+
+nav {
+    width: inherit;
+    float: left;
+}
+
+.barra_nav li {
+    float: left;
+
+}
+
+#barra_nav_user {
+    font-size: 24px;
+    padding-left: 20%;
+    font-weight: 700;
+    margin-left: 17%;
+}
+
+#barra_nav_user a{
+    color: black;
+}
+#barra_nav_user a:hover{
+    color: #0F6360;
+    text-decoration: none;
+}
+
+#barra_nav_home {
+    padding-inline-start: 15%;
+    margin-left: 15%;
+}
+
+.custom-btn{
+    background-color: #397d54;
+    color: black;
+    border: none;
+    border-radius: 7px;
+}
+.custom-btn:hover{
+    background-color: #235D3A;
+    color: white;
+}
+
+.cuerpo{
+    padding-top: 5%;
+}
+
+#nota-quiz {
+    padding-top: 5%;
+    padding-left: 7%;
+}
+#nota-preg {
+    padding-top: 5%;
+    padding-left: 7%;
+}
+

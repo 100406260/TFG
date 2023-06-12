@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/tfg.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script th:inline="javascript">
+        var preguntas = /*[[${preguntas_json}]]*/ '';
+        preguntas = JSON.parse(preguntas, this);
+        var quiz = /*[[${quiz_json}]]*/ '';
+        quiz = JSON.parse(quiz, this);
+    </script>
+    <script type="text/javascript">
+
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', { 'packages': ['corechart'] });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', ' ');
+            data.addColumn('number', ' ');
+            data.addRow(["Quiz", quiz[0]['calificacion']]);
+            data.addRow(["Media de estudiantes", quiz[0]['media']]);
+
+            var data_preg = new google.visualization.DataTable();
+            data_preg.addColumn('string', 'Pregunta');
+            data_preg.addColumn('number', 'Media');
+            data_preg.addColumn('number', 'Nota');
+
+            for (var i = 0; i < preguntas.length; i++) {
+                data_preg.addRow([preguntas[i]['name'], preguntas[i]['media_preg'], preguntas[i]['nota']]);
+            }
+
+            // Set chart options
+            var options_quiz = {
+                'title': 'Quiz',
+                'width': 400,
+                'height': 300,
+            };
+
+            var options_preg = {
+                'title': 'Preguntas',
+                'width': 600,
+                'height': 400,
+                'colors': ['#0F6360', '#F1C233'],
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.BarChart(document.getElementById('nota-quiz'));
+            var chart_ = new google.visualization.BarChart(document.getElementById('nota-preg'));
+            chart.draw(data, options_quiz);
+            chart_.draw(data_preg, options_preg);
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="header">
+        <nav>
+            <ul class="barra_nav">
+                <li class="element_barra_nav" id="barra_nav_user"> <a th:href="@{/}"><span
+                            th:text="${student.getName()}">Nombre</span>
+                        <span th:text="${student.getSurnames()}">Apellidos</span></a>
+                </li>
+                <li class="element_barra_nav" id="barra_nav_home"><a class="login_title" id="title_barra_nav"
+                        th:href="@{/logout}">
+                        <button class="custom-btn">Cerrar Sesión</button>
+                    </a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="cuerpo">
+        <h1>Sacaste un <span class="notaQuiz" th:if="${quiz.getCalificacion() >= 5}" th:text="${quiz.getCalificacion()}"
+                style="color: #0F6360;">6</span> en el
+            test!</h1>
+
+    </div>
+    <div id="nota-quiz"></div>
+    <div id="nota-preg"></div>
+</body>
+
+</html>

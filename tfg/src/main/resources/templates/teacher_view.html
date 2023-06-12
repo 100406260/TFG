@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>TFG</title>
+    <link rel="stylesheet" href="/public/tfg.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+        body{
+            background: #DFF8CA;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <section class="my-5">
+        <div class="container">
+            <div class="row">
+                <div class="upload col-md-8 mx-auto">
+                    <h2>what are you uploading?</h2>
+                    <h3>Quiz</h3>
+                    <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+                    <form method="post" th:action="@{/uploadQuiz}">
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload quiz report</button>
+                    </form>
+
+                    <h3>Course</h3>
+                    <form method="post" th:action="@{/uploadCourse}">
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload course report</button>
+                    </form>
+
+                    <h3>Logs</h3>
+                    <form method="post" th:action="@{/uploadLogs}">
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload course report</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

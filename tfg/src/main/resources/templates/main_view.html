@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>TFG</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/tfg.css">
+
+</head>
+
+<body>
+    <div class="header">
+        <nav>
+            <ul class="barra_nav">
+                <li class="element_barra_nav" id="barra_nav_user"> <a th:href="@{/}"><span
+                            th:text="${student.getName()}">Nombre</span>
+                        <span th:text="${student.getSurnames()}">Apellidos</span></a>
+                </li>
+                <li class="element_barra_nav" id="barra_nav_home"><a class="login_title" id="title_barra_nav"
+                        th:href="@{/logout}">
+                        <button class="custom-btn">Cerrar Sesión</button>
+                    </a></li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="show col-md-8 mx-auto" style="padding-top: 10px;">
+                <h1>Obtener estadísticas del quiz del alumno</h1>
+                <form method="post" th:action="@{/showDataQuiz}">
+                    <div>
+                        <input type="hidden" name="id" th:value="${student.getId()}">
+                        <label for="date">Date of the exam</label>
+                        <input type="date" name="date">
+                    </div>
+                    <button class="custom-btn" type="submit">Show Quiz Report Data</button>
+                </form>
+            </div>
+
+            <div class="show col-md-8 mx-auto" style="padding-top: 10px;">
+                <h1>Obtener estadísticas generales del alumno</h1>
+                <form method="post" th:action="@{/showStats}">
+                    <div>
+                        <input type="hidden" name="id" th:value="${student.getId()}">
+                    </div>
+                    <button class="custom-btn" type="submit">Show Log Stats</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
