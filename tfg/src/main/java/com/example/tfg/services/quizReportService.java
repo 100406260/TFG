@@ -69,13 +69,29 @@ public class quizReportService {
                 for (Cell cell : row) {
                     if ((cell.getRowIndex() >= 1 && cell.getRowIndex() <= (num_rows - 2))) {
                         switch (cell.getColumnIndex()) {
-                            case 0:
-                                student_aux.setSurnames(cell.getStringCellValue());
-                                break;
                             case 1:
-                                student_aux.setName(cell.getStringCellValue());
+                                String surname_aux = cell.getStringCellValue().toLowerCase();
+                                String surname = "";
+                                String[] words = surname_aux.split(" ");
+
+                                for (int i = 0; i < words.length; i++) {
+                                    surname += words[i].replaceFirst(words[i].charAt(0) + "",
+                                            Character.toUpperCase(words[i].charAt(0)) + "") + " ";
+                                }
+                                student_aux.setSurnames(surname);
                                 break;
                             case 2:
+                                String name_aux = cell.getStringCellValue().toLowerCase();
+                                String name = "";
+                                String[] words_ = name_aux.split(" ");
+
+                                for (int i = 0; i < words_.length; i++) {
+                                    name += words_[i].replaceFirst(words_[i].charAt(0) + "",
+                                            Character.toUpperCase(words_[i].charAt(0)) + "") + " ";
+                                }
+                                student_aux.setName(name);
+                                break;
+                            case 3:
                                 student_aux.setEmail(cell.getStringCellValue());
                                 student_aux.setfullName();
                                 Random rand = new Random();
@@ -143,19 +159,20 @@ public class quizReportService {
                                 quiz_aux.setEstado(cell.getStringCellValue());
                                 break;
                             case 4:
-                            System.out.println("entra case 4");
+                                System.out.println("entra case 4");
                                 String date = cell.getStringCellValue();
                                 System.out.println(date);
                                 DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyy  HH:mm",
                                         new Locale("es", "ES"));
                                 LocalDateTime date_aux = LocalDateTime.parse(date, dtfInput);
                                 Date date_ = java.sql.Timestamp.valueOf(date_aux);
+                                System.out.println(date_.toString());
                                 quiz_aux.setComenzado(date_);
                                 quiz_aux.setComenzadoDate(date_);
                                 System.out.println(quiz_aux.getComenzado().toString());
                                 break;
                             case 5:
-                            System.out.println("entra case 5");
+                                System.out.println("entra case 5");
                                 String date_f = cell.getStringCellValue();
                                 System.out.println(date_f);
                                 DateTimeFormatter dtfInput_f = DateTimeFormatter.ofPattern(
@@ -167,7 +184,7 @@ public class quizReportService {
                                 System.out.println(quiz_aux.getFinalizado().toString());
                                 break;
                             case 6:
-                            System.out.println("entra case 6");
+                                System.out.println("entra case 6");
                                 String dur_aux = cell.getStringCellValue();
                                 String[] values = dur_aux.split(" ");
                                 Duration t_req = Duration.ofMinutes(Long.valueOf(values[0]));

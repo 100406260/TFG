@@ -34,7 +34,7 @@ public class SecurityConfiguration {
 
         http.csrf().disable()
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/login", "/public/**", "/uploadfiles123", "/uploadCourse", "/uploadLogs",
+                    auth.requestMatchers("/login", "/public/**", "/uploadfiles123", "/uploadStudents", "/uploadCourse", "/uploadLogs",
                     "/uploadQuiz").permitAll();
                    // auth.requestMatchers( "/uploadfiles123", "/uploadCourse", "/uploadLogs",
                     //"/uploadQuiz").hasRole("ADMIN");

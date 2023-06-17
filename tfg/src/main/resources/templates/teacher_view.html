@@ -19,13 +19,21 @@
             <div class="row">
                 <div class="upload col-md-8 mx-auto">
                     <h2>what are you uploading?</h2>
+                    <h3>Student List</h3>
+                    <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+                    <form method="post" th:action="@{/uploadStudents}">
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload Student List</button>
+                    </form>
                     <h3>Quiz</h3>
                     <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
                     <form method="post" th:action="@{/uploadQuiz}">
                         <div class="form-group">
                             <input type="file" name="file" class="form-control-file">
                         </div>
-                        <button type="submit" class="btn btn-primary">Upload quiz report</button>
+                        <button type="submit" class="btn btn-primary">Upload Quiz report</button>
                     </form>
 
                     <h3>Course</h3>

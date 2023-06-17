@@ -36,7 +36,6 @@ import com.example.tfg.services.courseService;
 import com.example.tfg.services.quizReportService;
 import com.example.tfg.services.logsService;
 
-
 import org.springframework.ui.Model;
 
 import com.google.gson.Gson;
@@ -79,7 +78,7 @@ public class UploadController {
     @GetMapping("/login")
     public String login() {
         Optional<User> teacherOpt = studentRepository.findByEmail("teacher@teacher.com");
-        if(!teacherOpt.isPresent()){
+        if (!teacherOpt.isPresent()) {
             User teacher = new User();
             teacher.setEmail("teacher@teacher.com");
             teacher.setName("Teacher");
@@ -105,6 +104,22 @@ public class UploadController {
     @GetMapping("/uploadfiles123")
     public String teacherPage() {
         return "teacher_view";
+    }
+
+    @PostMapping("/uploadStudents")
+    public String uploadStudentsFile(Model model, @RequestParam("file") File file) throws IOException {
+
+        ArrayList<User> student_list = quizReportService.saveStudent(file);
+
+        for (int i = 0; i < student_list.size(); i++) {
+            Optional<User> studentOpt = studentRepository.findByEmail(student_list.get(i).getEmail());
+            if (!studentOpt.isPresent()) { // if student no present
+                student_list.get(i).setRole("USER");
+                studentRepository.save(student_list.get(i)); // save
+            }
+        }
+
+        return "redirect:/uploadfiles123";
     }
 
     @PostMapping("/uploadQuiz")
