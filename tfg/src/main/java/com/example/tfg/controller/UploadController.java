@@ -96,6 +96,15 @@ public class UploadController {
 
         User student = studentRepository.findAllByEmail(principal.getName());
 
+        List<Log> quiz_done = logRepository.findAllByStudentAndComponenteAndEventname(student, "Cuestionario", "Intento de cuestionario visualizado");
+        for(int i = 0; i<quiz_done.size();i++){
+            Optional<Quiz> quizOpt = quizRepository.findByStudentAndComenzadoDateContains(student, quiz_done.get(i).getDate().substring(0, 9));
+            if(quizOpt.isPresent()){
+                quizOpt.get().setNombre_quiz(quiz_done.get(i).getContexto());
+                quizReportService.update(quizOpt.get());
+            }
+        }
+
         model.addAttribute("student", student);
 
         return "main_view";
@@ -125,42 +134,25 @@ public class UploadController {
     @PostMapping("/uploadQuiz")
     public String uploadQuizFile(Model model, @RequestParam("file") File file) throws IOException {
 
-        ArrayList<User> student_list = quizReportService.saveStudent(file);
         ArrayList<Quiz> quiz_list = quizReportService.saveQuiz(file);
         ArrayList<Preguntas> preguntas_list = quizReportService.savePregunta(file);
         int pregunta = 0;
 
         // save the students and quizes
-        for (int i = 0; i < student_list.size(); i++) {
-            Optional<User> studentOpt = studentRepository.findByEmail(student_list.get(i).getEmail());
-            if (!studentOpt.isPresent()) { // if student no present
-                studentRepository.save(student_list.get(i)); // save
-                quiz_list.get(i).setStudent(student_list.get(i));// set studnet in quiz
-                quizRepository.save(quiz_list.get(i));// save quiz
-                System.out.println((preguntas_list.size() / quiz_list.size()));
-                for (int j = 0; j < (preguntas_list.size() / quiz_list.size()); j++) {
-                    preguntas_list.get(pregunta).setQuiz(quiz_list.get(i));// set quiz in pregunta
-                    preguntasRepository.save(preguntas_list.get(pregunta));// save pregunta
+        for (int i = 0; i < quiz_list.size(); i++) {
+            Optional<Quiz> noQuiz = quizRepository.findByStudentAndComenzadoDateContains(quiz_list.get(i).getStudent(),
+                    quiz_list.get(i).getComenzadoDate());
+            if (!noQuiz.isPresent()) {
+                quizRepository.save(quiz_list.get(i));
+                for (int j = 0; j < preguntas_list.size() / quiz_list.size(); j++) {
+                    preguntas_list.get(pregunta).setQuiz(quiz_list.get(i));
+                    preguntasRepository.save(preguntas_list.get(pregunta));
                     if (pregunta < preguntas_list.size()) {
                         pregunta++;
                     }
                 }
             }
-            if (studentOpt.isPresent()) {
-                Optional<Quiz> noQuiz = quizRepository.findByStudentAndComenzado(studentOpt.get(),
-                        quiz_list.get(i).getComenzado());
-                if (!noQuiz.isPresent()) {
-                    quiz_list.get(i).setStudent(studentOpt.get());
-                    quizRepository.save(quiz_list.get(i));
-                    for (int j = 0; j < preguntas_list.size() / quiz_list.size(); j++) {
-                        preguntas_list.get(pregunta).setQuiz(quiz_list.get(i));
-                        preguntasRepository.save(preguntas_list.get(pregunta));
-                        if (pregunta < preguntas_list.size()) {
-                            pregunta++;
-                        }
-                    }
-                }
-            }
+
         }
         return "redirect:/uploadfiles123";
     }
@@ -190,7 +182,10 @@ public class UploadController {
         ArrayList<Log> log_list = logsService.saveLogs(file);
 
         for (int i = 0; i < log_list.size(); i++) {
-            logRepository.save(log_list.get(i));
+            Optional<Log> logOpt = logRepository.findByStudentAndDatestring(log_list.get(i).getStudent(), log_list.get(i).getDatestring());
+            if(!logOpt.isPresent()){
+               logRepository.save(log_list.get(i)); 
+            } 
         }
 
         return "redirect:/uploadfiles123";
@@ -199,13 +194,13 @@ public class UploadController {
     @PostMapping("/showDataQuiz")
     public String showPreguntas(Principal principal, Model model, @RequestParam("date") String date)
             throws IOException, ParseException {
-        DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("yyyy-MM-dd", new Locale("es", "ES"));
-        LocalDate date1 = LocalDate.parse(date, dtfInput);
+        // DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("yyyy-MM-dd", new Locale("es", "ES"));
+        // LocalDate date1 = LocalDate.parse(date, dtfInput);
 
-        Date date_ = java.sql.Date.valueOf(date1);
+        // Date date_ = java.sql.Date.valueOf(date1);
         User student = studentRepository.findAllByEmail(principal.getName());
-        Optional<Quiz> quiz_opt = quizRepository.findByStudentAndComenzado(student,
-                date_);
+        Optional<Quiz> quiz_opt = quizRepository.findByStudentAndComenzadoDateContains(student,
+                date);
 
         List<Quiz> quizOpt = quizRepository.findByStudent(student);
 
@@ -255,9 +250,11 @@ public class UploadController {
 
         Gson gson = new Gson();
         String log_json = gson.toJson(log_list);
+        String log_visto_json = gson.toJson(log_list_last);
         model.addAttribute("student", student);
         model.addAttribute("need_to_see", need_to_see);
         model.addAttribute("log_json", log_json);
+        model.addAttribute("log_visto_json", log_visto_json);
         model.addAttribute("lastOnline", logsService.lastOnline(lastLog));
         return "log_view";
     }

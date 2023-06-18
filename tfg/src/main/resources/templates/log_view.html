@@ -1,59 +1,118 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/tfg.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/public/tfg.css" />
     <title>Estadísticas</title>
-
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
     <script th:inline="javascript">
-        var logs = /*[[${log_json}]]*/ '';
-        logs = JSON.parse(logs, this);
+      var logs = /*[[${log_visto_json}]]*/ "";
+      log_visto = JSON.parse(logs, this);
+      const dates = [];
+      for (var i = 0; i < log_visto.length; i++) {
+        dates.push([new Date(log_visto[i]["datestring"]), 1]);
+      }
     </script>
+    <script type="text/javascript">
+      // Load the Visualization API and the corechart package.
+      google.charts.load("current", { packages: ["calendar"] });
+      google.charts.setOnLoadCallback(drawChart);
 
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
 
-</head>
+      // Create the data table.
+      function drawChart() {
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: "date", id: "Date" });
+        dataTable.addColumn({ type: "number", id: "Logged" });
+        dataTable.addRows(dates);
 
-<body>
+        // Set chart options
+        var options = {
+          title: "Curso Visto",
+          height: 350,
+          calendar: {
+            yearLabel: {
+              fontSize: 42,
+              color: "#235D3A",
+              bold: true,
+            },
+          },
+          colorAxis: {
+            colors: ['#235D3A', '#71B27E'],
+          },
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.Calendar(
+          document.getElementById("log_calendar")
+        );
+        chart.draw(dataTable, options);
+      }
+    </script>
+  </head>
+
+  <body>
     <div class="header">
-        <ul class="barra_nav">
-            <li class="element_barra_nav" id="barra_nav_user"> <a th:href="@{/}"><span
-                        th:text="${student.getName()}">Nombre</span>
-                    <span th:text="${student.getSurnames()}">Apellidos</span></a>
-            </li>
-            <li class="element_barra_nav" id="barra_nav_home"><a class="login_title" id="title_barra_nav"
-                    th:href="@{/logout}">
-                    <button class="custom-btn">Cerrar Sesión</button>
-                </a></li>
-        </ul>
+      <ul class="barra_nav">
+        <li class="element_barra_nav" id="barra_nav_user">
+          <a th:href="@{/}"
+            ><span th:text="${student.getName()}">Nombre</span>
+            <span th:text="${student.getSurnames()}">Apellidos</span></a
+          >
+        </li>
+        <li class="element_barra_nav" id="barra_nav_home">
+          <a class="login_title" id="title_barra_nav" th:href="@{/logout}">
+            <button class="custom-btn">Cerrar Sesión</button>
+          </a>
+        </li>
+      </ul>
     </div>
     <div class="col-md-8 cuerpo"></div>
-    <br><br>
+    <br /><br />
+    <div
+      class="log_calendar"
+      id="log_calendar"
+      style="width: 1000px; height: 350px"
+    ></div>
     <div>
-        <h2>La última vez que te conectaste al curso fue hace <span th:text="${lastOnline}">0</span> días</h2>
-        <h3 th:if="${lastOnline > 7}">Tendrías que estar más activo en el curso!</h3>
-        <h3 th:if="${7 >= lastOnline}">Bien! Estás activo en el curso!</h3>
+      <h2>
+        La última vez que te conectaste al curso fue hace
+        <span th:text="${lastOnline}">0</span> días
+      </h2>
+      <h3 th:if="${lastOnline > 7}">
+        Tendrías que estar más activo en el curso!
+      </h3>
+      <h3 th:if="${7 >= lastOnline}">Bien! Estás activo en el curso!</h3>
     </div>
-    <br><br>
+    <br /><br />
     <div class="container" id="up">
-        <h2 th:if="${need_to_see.size() == 0}">Vas al dia con tus lecciones!</h2>
-        <h2 th:if="${5 >= need_to_see.size() && need_to_see.size() > 0}">Vas casi al dia con tus lecciones! Animo!</h2>
-        <h2 th:if="${need_to_see.size() > 5}"></h2>
-        <div class="por-ver">
-            <h3>Lecciones por ver:</h3>
-            <h4 ht:if="${need_to_see.size() == 0}">No tienes lecciones por ver</h4>
-            <ul>
-                <li th:each="log : ${need_to_see}"><span class="log-nombre" th:text="${log.getContexto()}">p1 </span>
-                </li>
-            </ul>
-        </div>
-
+      <h2 th:if="${need_to_see.size() == 0}">Vas al dia con tus lecciones!</h2>
+      <h2 th:if="${5 >= need_to_see.size() && need_to_see.size() > 0}">
+        Vas casi al dia con tus lecciones! Animo!
+      </h2>
+      <h2 th:if="${need_to_see.size() > 5}"></h2>
+      <div class="por-ver">
+        <h3>Lecciones por ver:</h3>
+        <h4 ht:if="${need_to_see.size() == 0}">No tienes lecciones por ver</h4>
+        <ul>
+          <li th:each="log : ${need_to_see}">
+            <span class="log-nombre" th:text="${log.getContexto()}">p1 </span>
+          </li>
+        </ul>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

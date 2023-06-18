@@ -8,8 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import java.text.ParseException;
-import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -54,17 +53,14 @@ public class Quiz {
     private Double media;
 
     @Column
-    private Date comenzadoDate;
+    private String comenzadoDate;
 
-    public Date getComenzadoDate() {
+    public String getComenzadoDate() {
         return comenzadoDate;
     }
 
     public void setComenzadoDate(Date comenzado) {
-        DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", new Locale("es", "ES"));
-        LocalDateTime date_aux = LocalDateTime.parse(comenzado.toString(), dtfInput);
-        Date date_ = java.sql.Date.valueOf(date_aux.toLocalDate());
-        this.comenzadoDate = date_;
+        this.comenzadoDate = comenzado.toString();
     }
 
     @ManyToOne(optional = false)
@@ -98,7 +94,7 @@ public class Quiz {
         return comenzado;
     }
 
-    public void setComenzado(Date comenzado) throws ParseException {
+    public void setComenzado(Date comenzado) {
         this.comenzado = comenzado;
     }
 

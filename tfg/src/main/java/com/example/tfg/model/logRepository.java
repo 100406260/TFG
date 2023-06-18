@@ -9,13 +9,15 @@ import com.example.tfg.model.Log;
 import com.example.tfg.model.User;
 
 public interface logRepository extends CrudRepository<Log, Long>{
-    Optional<Log> findByStudentAndDatestring(User student, Date datestring);
-    List<Log> findAllByStudent(User student);
-    List<Log> findAllByStudentAndComponenteOrderByDatestring(User student, String componente);
-    List<Log> findAllByStudentAndContextoAndComponenteAndEventnameOrderByDatestring(User student,String contexto,  String componente, String eventname);
-    int countByStudentAndDescripcion(User student, String descripcion);
+    Optional<Log> findByStudentAndDatestring(User User, Date datestring);
+    Optional<Log> findByStudentAndComponenteAndDateContainsAndEventname(User user, String componente, String date, String eventname);
+    List<Log> findAllByStudent(User User);
+    List<Log> findAllByStudentAndComponenteOrderByDatestring(User User, String componente);
+    List<Log> findAllByStudentAndComponenteAndEventname(User Student, String componente, String eventname);
+    List<Log> findAllByStudentAndContextoAndComponenteAndEventnameOrderByDatestring(User User,String contexto,  String componente, String eventname);
+    int countByStudentAndDescripcion(User User, String descripcion);
     List<Log> findAllByContextoContainsAndComponenteAndEventname(String contexto,  String componente, String eventname);
-    List<Log> findAllByStudentAndContextoContainsAndComponenteAndEventname(User student, String contexto, String componente, String eventname);
+    List<Log> findAllByStudentAndContextoContainsAndComponenteAndEventname(User User, String contexto, String componente, String eventname);
     List<Log> findAllByContextoAndComponenteAndEventname(String contexto, String componente, String eventname);
     
 }

@@ -69,9 +69,10 @@ public class logsService {
                                 LocalDateTime date_aux = LocalDateTime.parse(date, dtfInput);
                                 Date date_ = java.sql.Timestamp.valueOf(date_aux);
                                 log_aux.setDatestring(date_);
+                                log_aux.setDate(date_.toString());
                                 break;
                             case 1:
-                                Optional<User> student_aux = studentRepository.findByFullname(cell.getStringCellValue());
+                                Optional<User> student_aux = studentRepository.findByFullname("PAULA MADRID ALONSO");
                                 if(student_aux.isPresent()){
                                     log_aux.setStudent(student_aux.get());
                                 }
