@@ -41,7 +41,7 @@
 
             <div class="show col-md-8 mx-auto" style="padding-top: 10px;">
                 <h1>Obtener estadísticas generales del alumno</h1>
-                <form method="post" th:action="@{/showStats}">
+                <form method="post" th:action="@{/showStats/{studentId}(studentId=${student.getId()})}">
                     <div>
                         <input type="hidden" name="id" th:value="${student.getId()}">
                     </div>

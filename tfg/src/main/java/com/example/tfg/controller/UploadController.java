@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -104,7 +105,9 @@ public class UploadController {
                 quizReportService.update(quizOpt.get());
             }
         }
+        List<Quiz> quizes = quizRepository.findByStudent(student);
 
+        model.addAttribute("quizes", quizes);
         model.addAttribute("student", student);
 
         return "main_view";
@@ -202,29 +205,40 @@ public class UploadController {
         Optional<Quiz> quiz_opt = quizRepository.findByStudentAndComenzadoDateContains(student,
                 date);
 
-        List<Quiz> quizOpt = quizRepository.findByStudent(student);
+        return "redirect:/showQuiz/"+ student.getId()+ "/"+ quiz_opt.get().getId();
+    }
 
-        int quiz_index = quizOpt.indexOf(quiz_opt.get());
+    @GetMapping("/showQuiz/{studentId}/{quizId}")
+    public String showQuiz(Principal principal, Model model, @PathVariable Long quizId){
 
-        List<Preguntas> preguntas = preguntasRepository.findByQuiz(quizOpt.get(quiz_index));
+        User student = studentRepository.findAllByEmail(principal.getName());
+        Optional<Quiz> quizOpt = quizRepository.findById(quizId);
+
+
+        List<Preguntas> preguntas = preguntasRepository.findByQuiz(quizOpt.get());
 
         Gson gson = new Gson();
         String preguntas_json = gson.toJson(preguntas);
-        String quiz_json = gson.toJson(quizOpt);
+        String quiz_json = gson.toJson(quizOpt.get());
+
+        int media_preg = (int) ((preguntas.size())/quizOpt.get().getTiempo_requerido());
+        String media_= String.valueOf(media_preg);
 
         model.addAttribute("student", student);
         model.addAttribute("preguntas_json", preguntas_json);
         model.addAttribute("quiz_json", quiz_json);
-        model.addAttribute("quiz", quiz_opt.get());
+        model.addAttribute("quiz", quizOpt.get());
+        model.addAttribute("media_preg", media_);
         model.addAttribute("preguntas", preguntas);
 
         return "quizRep_view";
     }
 
-    @PostMapping("/showStats")
-    public String showLogs(Principal principal, Model model) {
+    @PostMapping("/showStats/{studentId}")
+    public String showLogs(Principal principal, Model model, @PathVariable long studentId) {
 
         User student = studentRepository.findAllByEmail(principal.getName());
+        List<Quiz> quizes = quizRepository.findByStudent(student);
 
         List<Log> log_list = logRepository.findAllByStudent(student);
         List<Log> log_list_last = logRepository.findAllByStudentAndContextoAndComponenteAndEventnameOrderByDatestring(
@@ -256,6 +270,7 @@ public class UploadController {
         model.addAttribute("log_json", log_json);
         model.addAttribute("log_visto_json", log_visto_json);
         model.addAttribute("lastOnline", logsService.lastOnline(lastLog));
+        //model.addAttribute("quizes", quizes);
         return "log_view";
     }
 }
