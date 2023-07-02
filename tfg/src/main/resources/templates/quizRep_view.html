@@ -85,10 +85,11 @@
         </nav>
     </div>
     <div class="cuerpo">
-        <h1>Sacaste un <span class="notaQuiz" th:if="${quiz.getCalificacion() >= 5}" th:text="${quiz.getCalificacion()}"
-                style="color: #0F6360;">6</span> en el
-            test!</h1>
-        <h3>De media has estado <span th:text="${media_}">2</span> minutos por pregunta  </h3>
+        <h1 th:if="${quiz.getCalificacion() >= 5}"> Sacaste un <span class="notaQuiz" th:if="${quiz.getCalificacion() >= 5}" th:text="${quiz.getCalificacion()}"
+            style="color: #2F6443;">6</span> en el test!</h1>
+        <h1 th:if="${5 > quiz.getCalificacion()}">Sacaste un <span class="notaQuiz" th:text="${quiz.getCalificacion()}"
+                style="color: #f24236;">3</span> en el test!</h1>
+        <h3>De media has estado <span th:text="${min}">2</span> minutos y <span th:text="${min}">2</span> segundos por pregunta</h3>
     </div>
     <div id="nota-quiz"></div>
     <div id="nota-preg"></div>

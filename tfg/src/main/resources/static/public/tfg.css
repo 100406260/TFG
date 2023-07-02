@@ -1,6 +1,16 @@
 /*https://colors.dopely.top/palettes/QswJFH8FRA7*/
 /*https://colors.dopely.top/palettes/TKfaJCIrB4Q*/
 
+/*
+#34724c
+#2F6443
+#71B27E
+#DFF8CA
+#FFA630
+#2E5077
+#f24236
+*/
+
 html{
     font-family: Lato sans-serif;
 }
@@ -53,7 +63,7 @@ nav {
     color: black;
 }
 #barra_nav_user a:hover{
-    color: #0F6360;
+    color: #2F6443;
     text-decoration: none;
 }
 
@@ -63,7 +73,7 @@ nav {
 }
 
 .custom-btn{
-    background-color: #397d54;
+    background-color: #2F6443;
     color: black;
     border: none;
     border-radius: 7px;

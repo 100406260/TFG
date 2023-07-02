@@ -95,12 +95,18 @@ public class UploadController {
     @GetMapping(path = "/")
     public String mainView(Principal principal, Model model) {
 
+        if(principal.getName()== "teacher"){
+            return "/uploadfiles123";
+        }
+
         User student = studentRepository.findAllByEmail(principal.getName());
 
-        List<Log> quiz_done = logRepository.findAllByStudentAndComponenteAndEventname(student, "Cuestionario", "Intento de cuestionario visualizado");
-        for(int i = 0; i<quiz_done.size();i++){
-            Optional<Quiz> quizOpt = quizRepository.findByStudentAndComenzadoDateContains(student, quiz_done.get(i).getDate().substring(0, 9));
-            if(quizOpt.isPresent()){
+        List<Log> quiz_done = logRepository.findAllByStudentAndComponenteAndEventname(student, "Cuestionario",
+                "Intento de cuestionario visualizado");
+        for (int i = 0; i < quiz_done.size(); i++) {
+            Optional<Quiz> quizOpt = quizRepository.findByStudentAndComenzadoDateContains(student,
+                    quiz_done.get(i).getDate().substring(0, 9));
+            if (quizOpt.isPresent()) {
                 quizOpt.get().setNombre_quiz(quiz_done.get(i).getContexto());
                 quizReportService.update(quizOpt.get());
             }
@@ -185,10 +191,11 @@ public class UploadController {
         ArrayList<Log> log_list = logsService.saveLogs(file);
 
         for (int i = 0; i < log_list.size(); i++) {
-            Optional<Log> logOpt = logRepository.findByStudentAndDatestring(log_list.get(i).getStudent(), log_list.get(i).getDatestring());
-            if(!logOpt.isPresent()){
-               logRepository.save(log_list.get(i)); 
-            } 
+            Optional<Log> logOpt = logRepository.findByStudentAndDatestring(log_list.get(i).getStudent(),
+                    log_list.get(i).getDatestring());
+            if (!logOpt.isPresent()) {
+                logRepository.save(log_list.get(i));
+            }
         }
 
         return "redirect:/uploadfiles123";
@@ -197,7 +204,8 @@ public class UploadController {
     @PostMapping("/showDataQuiz")
     public String showPreguntas(Principal principal, Model model, @RequestParam("date") String date)
             throws IOException, ParseException {
-        // DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("yyyy-MM-dd", new Locale("es", "ES"));
+        // DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("yyyy-MM-dd", new
+        // Locale("es", "ES"));
         // LocalDate date1 = LocalDate.parse(date, dtfInput);
 
         // Date date_ = java.sql.Date.valueOf(date1);
@@ -205,15 +213,14 @@ public class UploadController {
         Optional<Quiz> quiz_opt = quizRepository.findByStudentAndComenzadoDateContains(student,
                 date);
 
-        return "redirect:/showQuiz/"+ student.getId()+ "/"+ quiz_opt.get().getId();
+        return "redirect:/showQuiz/" + student.getId() + "/" + quiz_opt.get().getId();
     }
 
     @GetMapping("/showQuiz/{studentId}/{quizId}")
-    public String showQuiz(Principal principal, Model model, @PathVariable Long quizId){
+    public String showQuiz(Principal principal, Model model, @PathVariable(name = "quizId") Long quizId) {
 
         User student = studentRepository.findAllByEmail(principal.getName());
         Optional<Quiz> quizOpt = quizRepository.findById(quizId);
-
 
         List<Preguntas> preguntas = preguntasRepository.findByQuiz(quizOpt.get());
 
@@ -221,21 +228,25 @@ public class UploadController {
         String preguntas_json = gson.toJson(preguntas);
         String quiz_json = gson.toJson(quizOpt.get());
 
-        int media_preg = (int) ((preguntas.size())/quizOpt.get().getTiempo_requerido());
-        String media_= String.valueOf(media_preg);
+        Double media_preg = (double) ((quizOpt.get().getTiempo_requerido().doubleValue()) / (preguntas.size()));
+        int t = (int) (100 * media_preg);
+        int min = t / 100;
+        int sec = 60 * (t % 100);
 
         model.addAttribute("student", student);
         model.addAttribute("preguntas_json", preguntas_json);
         model.addAttribute("quiz_json", quiz_json);
+        model.addAttribute("media_preg", media_preg);
+        model.addAttribute("min", min);
+        model.addAttribute("sec", sec);
         model.addAttribute("quiz", quizOpt.get());
-        model.addAttribute("media_preg", media_);
         model.addAttribute("preguntas", preguntas);
 
         return "quizRep_view";
     }
 
     @PostMapping("/showStats/{studentId}")
-    public String showLogs(Principal principal, Model model, @PathVariable long studentId) {
+    public String showLogs(Principal principal, Model model, @PathVariable Long studentId) {
 
         User student = studentRepository.findAllByEmail(principal.getName());
         List<Quiz> quizes = quizRepository.findByStudent(student);
@@ -270,7 +281,7 @@ public class UploadController {
         model.addAttribute("log_json", log_json);
         model.addAttribute("log_visto_json", log_visto_json);
         model.addAttribute("lastOnline", logsService.lastOnline(lastLog));
-        //model.addAttribute("quizes", quizes);
+        // model.addAttribute("quizes", quizes);
         return "log_view";
     }
 }

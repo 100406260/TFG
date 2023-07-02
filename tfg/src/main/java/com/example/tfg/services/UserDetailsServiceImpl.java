@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(email);
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        if(student.getEmail().equals("teacher@teacher.com")){     
+        if(student.getEmail() == "teacher@teacher.com"){     
         grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
         } else {
             grantedAuthorities.add(new SimpleGrantedAuthority("USER"));

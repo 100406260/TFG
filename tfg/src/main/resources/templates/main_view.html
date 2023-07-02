@@ -38,6 +38,14 @@
                     <button class="custom-btn" type="submit">Show Quiz Report Data</button>
                 </form>
             </div>
+            
+
+            <!-- <div><ul>
+                <li th:each="quiz : ${quizes}">
+                    <span th:if="${quiz.getNombre_Quiz() != null}"><a href=@{/showQuiz/{studentId}/{quizId}></a></span>
+                    <span th:if="${quiz.getNombre_Quiz() == null}">Fecha</span>
+                  </li>
+            </ul></div> -->
 
             <div class="show col-md-8 mx-auto" style="padding-top: 10px;">
                 <h1>Obtener estadísticas generales del alumno</h1>
@@ -48,6 +56,13 @@
                     <button class="custom-btn" type="submit">Show Log Stats</button>
                 </form>
             </div>
+        </div>
+        <div>
+            <li th:each="quiz : ${quizes}">
+                <a th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${quiz.getId()})}">
+                    <span th:if="${quiz.getNombre_Quiz() !== null}"></span>
+                </a>
+            </li>
         </div>
     </div>
 </body>
