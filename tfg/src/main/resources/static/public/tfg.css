@@ -19,10 +19,19 @@ body {
     background-color: #DFF8CA;
 }
 
+.container{
+    margin-top: 8rem;
+}
+
+.title {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 3rem;
+}
+
 .login-form {
-    padding-block: 10rem;
-    padding-left: 23%;
-    padding-right: 20%;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 
 .header {
@@ -74,17 +83,17 @@ nav {
 
 .custom-btn{
     background-color: #2F6443;
-    color: black;
+    color: white;
     border: none;
     border-radius: 7px;
 }
 .custom-btn:hover{
-    background-color: #235D3A;
+    background-color: #34724c;
     color: white;
 }
 
 .cuerpo{
-    padding-top: 5%;
+    margin-top: 8rem;
 }
 
 #nota-quiz {
@@ -96,3 +105,16 @@ nav {
     padding-left: 7%;
 }
 
+#mostrar-ef {
+    display: none;
+}
+
+
+/* SOLUCIONES POR ANCHO PANTALLA*/
+
+@media screen and (max-width: 1150px){
+    #barra_nav_home{
+        padding-inline-start: 0%;
+        margin-left: 25%;
+    }
+}

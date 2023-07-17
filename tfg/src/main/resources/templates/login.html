@@ -11,21 +11,21 @@
 <body>
 
     <div th:if="${param.error}">
-        Invalid username and password.
+        Email o contraseña incorrectas.
     </div>
     <div th:if="${param.logout}">
-        You have been logged out.
+        Se ha cerrado la sesión.
     </div>
 
     <div class="container">
+        <h1 class="title">App de motivación al estudiante</h1>
         <form class="login-form" th:action="@{/login}" method="post">
-            <div>
-                <label for="username">Email</label>
-                <input type="text" name="username" required>
-            </div>
-            <div>
-                <label for="password">Contraseña</label>
-                <input type="password" name="password" id="password" required> <br>
+            <div class="form-floating mb-4">
+                <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Email address" required>
+              </div>
+
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required> <br>
                 <input name="checkbox" type="checkbox" onclick="showPass()"> Mostrar Contraseña
                 <script>
                     function showPass() {
@@ -39,7 +39,9 @@
                 </script>
 
             </div>
-            <button type="submit">Iniciar sesion</button>
+            <div class="d-grid mb-4">
+                <button class="btn btn-primary btn-login text-uppercase fw-bold custom-btn w-100" type="submit">Iniciar sesión</button>
+              </div>
         </form>
     </div>
 </body>

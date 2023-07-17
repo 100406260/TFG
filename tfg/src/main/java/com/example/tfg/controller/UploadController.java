@@ -201,21 +201,6 @@ public class UploadController {
         return "redirect:/uploadfiles123";
     }
 
-    @PostMapping("/showDataQuiz")
-    public String showPreguntas(Principal principal, Model model, @RequestParam("date") String date)
-            throws IOException, ParseException {
-        // DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("yyyy-MM-dd", new
-        // Locale("es", "ES"));
-        // LocalDate date1 = LocalDate.parse(date, dtfInput);
-
-        // Date date_ = java.sql.Date.valueOf(date1);
-        User student = studentRepository.findAllByEmail(principal.getName());
-        Optional<Quiz> quiz_opt = quizRepository.findByStudentAndComenzadoDateContains(student,
-                date);
-
-        return "redirect:/showQuiz/" + student.getId() + "/" + quiz_opt.get().getId();
-    }
-
     @GetMapping("/showQuiz/{studentId}/{quizId}")
     public String showQuiz(Principal principal, Model model, @PathVariable(name = "quizId") Long quizId) {
 
@@ -246,7 +231,7 @@ public class UploadController {
     }
 
     @PostMapping("/showStats/{studentId}")
-    public String showLogs(Principal principal, Model model, @PathVariable Long studentId) {
+    public String showLogs(Principal principal, Model model) {
 
         User student = studentRepository.findAllByEmail(principal.getName());
         List<Quiz> quizes = quizRepository.findByStudent(student);
@@ -265,6 +250,15 @@ public class UploadController {
 
         List<Log> need_to_see = logsService.needToSee(log_archivos_student, log_archivos_all);
 
+        List<Quiz> quizes_sin_revisar = new ArrayList<>();
+        for(int i=0; i< quizes.size(); i++){
+            Optional<Log> quiz_visto = logRepository.findByStudentAndContextoAndEventname(
+                student, quizes.get(i).getNombre_quiz(), "Intento del cuestionario revisado");
+            if(!quiz_visto.isPresent()){
+                quizes_sin_revisar.add(quizes.get(i));
+            }
+        }
+
         for (int i = 0; i < need_to_see.size(); i++) {
             for (int j = 0; j < need_to_see.size(); j++) {
                 if (need_to_see.get(i).getContexto().equalsIgnoreCase(need_to_see.get(j).getContexto())) {
@@ -280,6 +274,7 @@ public class UploadController {
         model.addAttribute("need_to_see", need_to_see);
         model.addAttribute("log_json", log_json);
         model.addAttribute("log_visto_json", log_visto_json);
+        model.addAttribute("no_vistos", quizes_sin_revisar);
         model.addAttribute("lastOnline", logsService.lastOnline(lastLog));
         // model.addAttribute("quizes", quizes);
         return "log_view";

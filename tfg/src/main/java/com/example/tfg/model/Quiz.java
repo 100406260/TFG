@@ -8,11 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.Date;
-import java.util.Locale;
+
 
 @Entity
 @Table(name = "quizes")
@@ -54,6 +52,12 @@ public class Quiz {
 
     @Column
     private String comenzadoDate;
+
+    public String getDateString(Date comenzado){
+        String fullDate = comenzado.toString();
+        String[] date = fullDate.split(" ");
+        return date[0];
+    }
 
     public String getComenzadoDate() {
         return comenzadoDate;

@@ -1,70 +1,69 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-
-<head>
+  <head>
     <title>TFG</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/tfg.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/public/tfg.css" />
+  </head>
 
-</head>
-
-<body>
+  <body>
     <div class="header">
-        <nav>
-            <ul class="barra_nav">
-                <li class="element_barra_nav" id="barra_nav_user"> <a th:href="@{/}"><span
-                            th:text="${student.getName()}">Nombre</span>
-                        <span th:text="${student.getSurnames()}">Apellidos</span></a>
-                </li>
-                <li class="element_barra_nav" id="barra_nav_home"><a class="login_title" id="title_barra_nav"
-                        th:href="@{/logout}">
-                        <button class="custom-btn">Cerrar Sesión</button>
-                    </a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul class="barra_nav">
+          <li class="element_barra_nav" id="barra_nav_user">
+            <a th:href="@{/}"
+              ><span th:text="${student.getName()}">Nombre</span>
+              <span th:text="${student.getSurnames()}">Apellidos</span></a
+            >
+          </li>
+          <li class="element_barra_nav" id="barra_nav_home">
+            <a class="login_title" id="title_barra_nav" th:href="@{/logout}">
+              <button class="custom-btn text-uppercase fw-bold">Cerrar Sesión</button>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
-
-    <div class="container">
-        <div class="row">
-            <div class="show col-md-8 mx-auto" style="padding-top: 10px;">
-                <h1>Obtener estadísticas del quiz del alumno</h1>
-                <form method="post" th:action="@{/showDataQuiz}">
-                    <div>
-                        <input type="hidden" name="id" th:value="${student.getId()}">
-                        <label for="date">Date of the exam</label>
-                        <input type="date" name="date">
-                    </div>
-                    <button class="custom-btn" type="submit">Show Quiz Report Data</button>
-                </form>
-            </div>
-            
-
-            <!-- <div><ul>
-                <li th:each="quiz : ${quizes}">
-                    <span th:if="${quiz.getNombre_Quiz() != null}"><a href=@{/showQuiz/{studentId}/{quizId}></a></span>
-                    <span th:if="${quiz.getNombre_Quiz() == null}">Fecha</span>
-                  </li>
-            </ul></div> -->
-
-            <div class="show col-md-8 mx-auto" style="padding-top: 10px;">
-                <h1>Obtener estadísticas generales del alumno</h1>
-                <form method="post" th:action="@{/showStats/{studentId}(studentId=${student.getId()})}">
-                    <div>
-                        <input type="hidden" name="id" th:value="${student.getId()}">
-                    </div>
-                    <button class="custom-btn" type="submit">Show Log Stats</button>
-                </form>
-            </div>
-        </div>
-        <div>
-            <li th:each="quiz : ${quizes}">
-                <a th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${quiz.getId()})}">
-                    <span th:if="${quiz.getNombre_Quiz() !== null}"></span>
-                </a>
-            </li>
-        </div>
+    <div class="container mt-10">
+      <div class="mx-auto">
+        <h1>Mostrar estadísticas generales de <span th:text="${student.getName()}">Nombre</span></h1>
+        <form
+          method="post"
+          th:action="@{/showStats/{studentId}(studentId=${student.getId()})}"
+        >
+          <button class="custom-btn" type="submit">Mostrar estadísticas</button>
+        </form>
+      </div>
+      <div class="mx-auto mt-4">
+        <table class="table">
+          <thead>
+            <h2>Quizes hechos en el curso</h2>
+            <tr>
+              <th scope="col">Quiz</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Nota</th>
+              <th scope="col">Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="quiz : ${quizes}">
+              <td th:text="${quiz.getNombre_quiz()} ?: 'Quiz'">Mark</td>
+              <td th:text="${quiz.getDateString(quiz.getComenzado())}">Otto</td>
+              <td th:text="${quiz.getCalificacion()}">@mdo</td>
+              <td>
+                <a
+                  th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${quiz.getId()})}"
+                  >Ver detalles</a
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

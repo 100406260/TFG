@@ -11,6 +11,7 @@ import com.example.tfg.model.User;
 public interface logRepository extends CrudRepository<Log, Long>{
     Optional<Log> findByStudentAndDatestring(User User, Date datestring);
     Optional<Log> findByStudentAndComponenteAndDateContainsAndEventname(User user, String componente, String date, String eventname);
+    Optional<Log> findByStudentAndContextoAndEventname(User student, String contexto, String eventname);
     List<Log> findAllByStudent(User User);
     List<Log> findAllByStudentAndComponenteOrderByDatestring(User User, String componente);
     List<Log> findAllByStudentAndComponenteAndEventname(User Student, String componente, String eventname);
