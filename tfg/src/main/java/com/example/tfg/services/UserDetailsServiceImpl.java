@@ -29,9 +29,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         if(student.getEmail() == "teacher@teacher.com"){     
-        grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
+        grantedAuthorities.add(new SimpleGrantedAuthority(student.getRole()));
         } else {
-            grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+            grantedAuthorities.add(new SimpleGrantedAuthority(student.getRole()));
         }
 
         return new org.springframework.security.core.userdetails.User(

@@ -75,50 +75,59 @@
         </li>
         <li class="element_barra_nav" id="barra_nav_home">
           <a class="login_title" id="title_barra_nav" th:href="@{/logout}">
-            <button class="custom-btn text-uppercase fw-bold">Cerrar Sesión</button>
+            <button class="custom-btn text-uppercase fw-bold">
+              Cerrar Sesión
+            </button>
           </a>
         </li>
       </ul>
     </div>
-    <div class="container">
-      <div
-        class="log_calendar"
-        id="log_calendar"
-        style="width: 1000px; height: 180px"
-      ></div>
-      <div>
-        <h2>
-          La última vez que te conectaste al curso fue hace
-          <span th:text="${lastOnline}">0</span> días
-        </h2>
-        <h3 th:if="${lastOnline > 7}">
-          Tendrías que estar más activo en el curso!
-        </h3>
-        <h3 th:if="${7 >= lastOnline}">Bien! Estás activo en el curso!</h3>
+    <div class="cuerpo mt-6 mb-4 mx-5">
+      <div id="dias-conex" class="d-inline-flex">
+        <div
+          class="log_calendar"
+          id="log_calendar"
+          style="width: 1000px; height: 180px"
+        ></div>
+        <div class="ml-4">
+          <h3>
+            La última vez que te conectaste al curso fue hace
+            <span th:text="${lastOnline}">0</span> días
+          </h3>
+          <h5 th:if="${lastOnline > 7}">
+            Tendrías que estar más activo en el curso!
+          </h5>
+          <h5 th:if="${7 >= lastOnline}">Bien! Estás activo en el curso!</h5>
+        </div>
       </div>
 
-      <div class="row mx-5" id="up">
+      <div class="row mt-2 mx-5" id="up">
         <div class="col">
-          <h2>Sobre tus lecciones:</h2>
+          <h3>Sobre tus lecciones:</h3>
           <h2 th:if="${need_to_see.size() == 0}">
             Vas al dia con tus lecciones!
           </h2>
-          <h2 th:if="${5 >= need_to_see.size() && need_to_see.size() > 0}">
-            Vas casi al dia con tus lecciones! Animo!
-          </h2>
-          <h2 th:if="${need_to_see.size() > 5}"></h2>
-          <div class="por-ver">
-            <h3>Lecciones por ver:</h3>
-            <h4 ht:if="${need_to_see.size() == 0}">
-              No tienes lecciones por ver
-            </h4>
-            <ul>
-              <li th:each="log : ${need_to_see}">
-                <span class="log-nombre" th:text="${log.getContexto()}"
-                  >p1
-                </span>
-              </li>
-            </ul>
+          <script>
+            if (log_visto.length === 0) {
+              document.getElementById("queda-por-ver").style.display = "none";
+            }
+          </script>
+          <div id="queda-por-ver">
+            <h3 th:if="${5 >= need_to_see.size() && need_to_see.size() > 0}">
+              Vas casi al dia con tus lecciones! Animo!
+            </h3>
+            <h3 th:if="${need_to_see.size() > 5}"></h3>
+
+            <!-- <div class="por-ver">
+              <h4>Lecciones por ver:</h4>
+              <ul>
+                <li th:each="log : ${need_to_see}">
+                  <span class="log-nombre" th:text="${log.getContexto()}"
+                    >p1
+                  </span>
+                </li>
+              </ul>
+            </div> -->
           </div>
         </div>
 
@@ -133,15 +142,18 @@
   </div> -->
         <div class="col">
           <h2>Sobre tus Cuestionarios realizados:</h2>
-          <p>No has revisado lo siguientes cuestionarios, si quieres puedes tener una vision general
-            de cómo te salió desde aquí pero te recomendamos también mirarlo desde Aula Global para 
-            información más detallada de cada pregunta.
+          <p>
+            No has revisado lo siguientes cuestionarios, si quieres puedes tener
+            una vision general de cómo te salió desde aquí pero te recomendamos
+            también mirarlo desde Aula Global para información más detallada de
+            cada pregunta.
           </p>
           <li th:each="visto : ${no_vistos}">
-            <a  th:text="${visto.getNombre_quiz()} ?: 'Quiz'"
-                  th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${visto.getId()})}"
-                  >Ver detalles</a
-                >
+            <a
+              th:text="${visto.getNombre_quiz()} ?: 'Quiz'"
+              th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${visto.getId()})}"
+              >Ver detalles</a
+            >
           </li>
         </div>
       </div>

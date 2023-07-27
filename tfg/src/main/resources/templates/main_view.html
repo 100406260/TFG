@@ -7,6 +7,17 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="/public/tfg.css" />
+    <script th:inline="javascript">
+      var teacher = /*[[${teacher}]]*/ "";
+      console.log(teacher);
+      var student_view = document.getElementById("student_view");
+      var teacher_view = document.getElementById("teacher_view");
+      if (teacher == true) {
+        student_view.style.display === "none";
+      } else {
+        teacher_view.style.display === "none";
+      }
+    </script>
   </head>
 
   <body>
@@ -21,7 +32,9 @@
           </li>
           <li class="element_barra_nav" id="barra_nav_home">
             <a class="login_title" id="title_barra_nav" th:href="@{/logout}">
-              <button class="custom-btn text-uppercase fw-bold">Cerrar Sesión</button>
+              <button class="custom-btn text-uppercase fw-bold">
+                Cerrar Sesión
+              </button>
             </a>
           </li>
         </ul>
@@ -29,37 +42,73 @@
     </div>
 
     <div class="container mt-10">
-      <div class="mx-auto">
-        <h1>Mostrar estadísticas generales de <span th:text="${student.getName()}">Nombre</span></h1>
-        <form
-          method="post"
-          th:action="@{/showStats/{studentId}(studentId=${student.getId()})}"
-        >
-          <button class="custom-btn" type="submit">Mostrar estadísticas</button>
-        </form>
+      <div id="student_view">
+        <div class="mx-auto">
+          <h1>
+            Mostrar estadísticas generales de
+            <span th:text="${student.getName()}">Nombre</span>
+          </h1>
+          <form
+            method="post"
+            th:action="@{/showStats/{studentId}(studentId=${student.getId()})}"
+          >
+            <button class="custom-btn" type="submit">
+              Mostrar estadísticas
+            </button>
+          </form>
+        </div>
+        <div class="mx-auto mt-4">
+          <table class="table">
+            <thead>
+              <h2>Quizes hechos en el curso</h2>
+              <tr>
+                <th scope="col">Quiz</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Nota</th>
+                <th scope="col">Detalles</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="quiz : ${quizes}">
+                <td th:text="${quiz.getNombre_quiz()} ?: 'Quiz'">Mark</td>
+                <td th:text="${quiz.getDateString(quiz.getComenzado())}">
+                  Otto
+                </td>
+                <td th:text="${quiz.getCalificacion()}">@mdo</td>
+                <td>
+                  <a
+                    th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${quiz.getId()})}"
+                    >Ver detalles</a
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="mx-auto mt-4">
+
+      <div id="teacher_view" class="mx-auto">
+        <h3>Vista del profesor</h3>
         <table class="table">
           <thead>
-            <h2>Quizes hechos en el curso</h2>
+            <h2>Estudiantes del curso</h2>
             <tr>
-              <th scope="col">Quiz</th>
-              <th scope="col">Fecha</th>
-              <th scope="col">Nota</th>
-              <th scope="col">Detalles</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Email</th>
+              <th scope="col">Stats</th>
             </tr>
           </thead>
           <tbody>
-            <tr th:each="quiz : ${quizes}">
-              <td th:text="${quiz.getNombre_quiz()} ?: 'Quiz'">Mark</td>
-              <td th:text="${quiz.getDateString(quiz.getComenzado())}">Otto</td>
-              <td th:text="${quiz.getCalificacion()}">@mdo</td>
-              <td>
-                <a
-                  th:href="@{/showQuiz/{studentId}/{quizId}(studentId = ${student.getId()}, quizId = ${quiz.getId()})}"
-                  >Ver detalles</a
-                >
+            <tr th:each="student : ${students}">
+              <td th:text="${student.getfullName()}">Nombre</td>
+              <td th:text="${student.getEmail()}">
+                Email
               </td>
+              <td ><a
+                th:href="@{/showStats/{studentId}(studentId = ${student.getId()})}"
+                >Ver estadísticas</a
+              ></td>
+              
             </tr>
           </tbody>
         </table>

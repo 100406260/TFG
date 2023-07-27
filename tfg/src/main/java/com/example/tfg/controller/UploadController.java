@@ -94,9 +94,13 @@ public class UploadController {
 
     @GetMapping(path = "/")
     public String mainView(Principal principal, Model model) {
+        boolean teacher = false;
 
-        if(principal.getName()== "teacher"){
-            return "/uploadfiles123";
+        if(principal.getName().equals("teacher@teacher.com")){
+            teacher = true;
+            List<User> students = studentRepository.findAll();
+            students.remove(0);
+            model.addAttribute("students", students);
         }
 
         User student = studentRepository.findAllByEmail(principal.getName());
@@ -113,6 +117,7 @@ public class UploadController {
         }
         List<Quiz> quizes = quizRepository.findByStudent(student);
 
+        model.addAttribute("teacher", teacher);
         model.addAttribute("quizes", quizes);
         model.addAttribute("student", student);
 

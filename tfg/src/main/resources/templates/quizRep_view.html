@@ -34,10 +34,14 @@
       function drawChart() {
         // Create the data table.
         var data = new google.visualization.DataTable();
-        data.addColumn("string", " ");
-        data.addColumn("number", " ");
-        data.addRow(["Quiz", quiz["calificacion"]]);
-        data.addRow(["Media de estudiantes", quiz["media"]]);
+        var nombre_q = "Quiz";
+        if (quiz["nombre_quiz"]) {
+          nombre_q = quiz["nombre_quiz"];
+        }
+        data.addColumn("string", "Quiz");
+        data.addColumn("number", "Calificación");
+        data.addColumn("number", "Media");
+        data.addRow([nombre_q, quiz["calificacion"], quiz["media"]]);
 
         var data_preg = new google.visualization.DataTable();
         data_preg.addColumn("string", "Pregunta");
@@ -55,15 +59,16 @@
         // Set chart options
         var options_quiz = {
           title: "Quiz",
-          width: 400,
-          height: 300,
+          width: 600,
+          height: 400,
+          colors: ["#2E5077", "#71B27E"],
         };
 
         var options_preg = {
           title: "Preguntas",
           width: 600,
           height: 400,
-          colors: ["#0F6360", "#F1C233"],
+          colors: ["#34724c", "#FFA630"],
         };
 
         // Instantiate and draw our chart, passing in some options.
@@ -99,8 +104,8 @@
         </ul>
       </nav>
     </div>
-    <div class="cuerpo mt-10">
-      <h1 th:if="${quiz.getCalificacion() >= 5}">
+    <div class="cuerpo mt-6 mb-4 mx-5">
+      <h3 th:if="${quiz.getCalificacion() >= 5}">
         Sacaste un
         <span
           class="notaQuiz"
@@ -110,8 +115,8 @@
           >6</span
         >
         en el test!
-      </h1>
-      <h1 th:if="${5 > quiz.getCalificacion()}">
+      </h3>
+      <h3 th:if="${5 > quiz.getCalificacion()}">
         Sacaste un
         <span
           class="notaQuiz"
@@ -120,74 +125,185 @@
           >3</span
         >
         en el test
-      </h1>
-      <h3>
+      </h3>
+      <h5>
         De media has estado <span th:text="${min}">2</span> minutos y
         <span th:text="${min}">2</span> segundos por pregunta
-      </h3>
-    </div>
-    <div id="nota-quiz"></div>
-    <div id="nota-preg"></div>
+      </h5>
 
-    <div class="eficacia mt-2">
-        <div class="d-inline-flex">
-           <h4>
-        ¿Quieres calcular tu <strong>eficiencia</strong> y
-        <strong>eficacia</strong> de este examen?
-      </h4>
-      <button id="show-ef-btn" class="custom-btn" onclick="showEficacia()">Calcular</button>
-      <script>
-        function showEficacia() {
-          var div_ef = document.getElementById("mostrar-ef");
-          var ef_btn = document.getElementById("show-ef-btn");
-          if (div_ef.style.display === "none") {
-            div_ef.style.display = "block";
-            ef_btn.innerHTML = "No calcular";
-          } else {
-            div_ef.style.display = "none";
-            ef_btn.innerHTML = "Calcular";
-          }
-        }
-      </script> 
-        </div>
-      
-      <div class="mostrar-ef" id="mostrar-ef">
-        <p>Empecemos por definir la <strong>eficacia</strong>. La eficacia se refiere a la capacidad de lograr objetivos,
-             su prioridad es ver el resultado final, en este caso la calificacion obtenida, no cómo se obtuvo.</p>
-        <br>
-        <p>El calculo general de la eficacia se determina por: <strong>(Resultado real x 100) ÷ Resultado planeado = % de eficacia.</strong>
-        Por lo que en este caso tendrás que introducir la calificación que esperabas haber obtenido en el examen.
-        <i>¡Ten en cuenta que al meter el valor a mano tienes que ser honesto con tu respuesta!</i></p>
-
-        <script>
-            var calif;
-            var res;
-            function validate(){
-                calif = document.forms["calc-efi"]["calif"].value;
-                console.log(calif)
-
-                if(calif == 0){
-                    res = "Un 0 no puede ser la nota a la que aspirabas, ¡se un poco más ambicioso!"
-                } else {
-                    var calc = ((quiz["calificacion"])/calif)*100;
-                    document.getElementById("res-efi").style.display = "block";
-                    document.getElementById("res-calif").innerHTML = calif;
-                    document.getElementById("res-efi-numb").innerHTML = calc;
-
-                }
-            }
-        </script>
-        <form name="calc-efi" action="javascript:validate();">
-            Introduce la calificación que esperabas: <input type="text" name="calif" id="calif" required>
-            <input type="submit" value="Calcular">
-        </form>
-
-        <br>
-        <p style="display: none;" id="res-efi">La eficacia para este examen es: <span>&#40;</span> 
-            <span th:text="${quiz.getCalificacion()}">8</span>*100
-            <span>&#41;</span> / <span id="res-calif"></span> = <span id="res-efi-numb">7</span> %</p>
+      <div class="d-inline-flex mx-0">
+        <div id="nota-quiz"></div>
+        <div id="nota-preg"></div>
       </div>
-      
+  
+      <div class="eficacia mt-4">
+        <div class="d-inline-flex">
+          <h4>
+            ¿Quieres calcular tu <strong>eficiencia</strong> y
+            <strong>eficacia</strong> de este examen?
+          </h4>
+  
+             <button
+            id="show-ef-btn"
+            class="custom-btn text-uppercase fw-bold ml-4"
+            onclick="showEficacia()"
+          >
+            Calcular
+          </button>
+          <script>
+            function showEficacia() {
+              var div_ef = document.getElementById("estadisticas");
+              var ef_btn = document.getElementById("show-ef-btn");
+              if (div_ef.style.display === "none") {
+                div_ef.style.display = "block";
+                ef_btn.innerHTML = "No calcular";
+              } else {
+                div_ef.style.display = "none";
+                ef_btn.innerHTML = "Calcular";
+              }
+            }
+          </script>
+        </div>
+  
+        <div id="estadisticas" class="mx-5">
+          <div class="mostrar-ef" id="mostrar-ef">
+            <h4 class="ml-3">Eficacia</h4>
+            <p>
+              Empecemos por definir la <strong>eficacia</strong>. La eficacia se
+              refiere a la capacidad de lograr objetivos, su prioridad es ver el
+              resultado final, en este caso la calificacion obtenida, no cómo se
+              obtuvo.
+            </p>
+            <br />
+            <p>
+              El calculo general de la eficacia se determina por:
+              <strong
+                >(Resultado real x 100) ÷ Resultado planeado = % de
+                eficacia.</strong
+              >
+              Por lo que en este caso tendrás que introducir la calificación que
+              esperabas haber obtenido en el examen.
+              <i
+                >¡Ten en cuenta que al meter el valor a mano tienes que ser
+                honesto con tu respuesta!</i
+              >
+            </p>
+  
+            <script>
+              var calif;
+              var res;
+              function validate() {
+                calif = document.forms["calc-efi"]["calif"].value;
+                console.log(calif);
+  
+                if (calif == 0) {
+                  res =
+                    "Un 0 no puede ser la nota a la que aspirabas, ¡se un poco más ambicioso!";
+                } else {
+                  var calc = (quiz["calificacion"] / calif) * 100;
+                  calc = calc.toFixed(2);
+                  document.getElementById("res-efi").style.display = "block";
+                  document.getElementById("res-calif").innerHTML = calif;
+                  document.getElementById("res-efi-numb").innerHTML = calc;
+                }
+              }
+            </script>
+            <form name="calc-efi" action="javascript:validate();">
+              Introduce la calificación que esperabas:
+              <input type="text" name="calif" id="calif" required />
+              <input type="submit" class="custom-btn text-uppercase fw-bold" value="Calcular" />
+            </form>
+  
+            <br />
+            <p style="display: none" id="res-efi">
+              La eficacia para este examen es:
+              <strong
+                ><span>&#40;</span>
+                <span th:text="${quiz.getCalificacion()}">8</span>*100
+                <span>&#41;</span> / <span id="res-calif"></span> =
+                <span id="res-efi-numb">7</span> %
+              </strong>
+            </p>
+            <p>
+              El resultado que se obtiene es el valor de la eficacia en
+              porcentaje. Si el valor es menor que 100% quiere decir que los
+              resultados obtenidos son inferiores a lo que te esperabas, y si el
+              valor es mayor a 100% quiere decir que el resultado es mejor que lo
+              que te esperabas.
+            </p>
+          </div>
+          <br />
+          <div class="mostrar-eficiencia" id="mostrar-eficiencia">
+            <h4 class="ml-3">Eficiencia</h4>
+            <p>
+              Definimos la <strong>eficiencia</strong> como la capacidad de
+              utilizar los recursos disponibles de la manera más adecuada y llegar
+              a los resultados esperados, en este caso queremos observar si el
+              tiempo utilizado en estudiar este cuestionario se ve reflejado en
+              los resultados
+            </p>
+            <br />
+            <p>
+              El calculo general de la eficiencia se puede determinar por:
+              <strong
+                >(Resultado obtenido * Tiempo requerido) ÷ (Resultado ideal *
+                Tiempo ideal)</strong
+              >. Supongamos en este caso que el resultado ideal es sacar un 10 y
+              el tiempo ideal requerido es de 4h de estudio.
+  
+              <script>
+                var tiempo;
+                var res;
+                function validateEfi() {
+                  tiempo = document.forms["calc-eficiencia"]["tiempo"].value;
+                  console.log(tiempo);
+  
+                  if (tiempo == 0) {
+                    res =
+                      "Un 0 no puede ser la nota a la que aspirabas, ¡se un poco más ambicioso!";
+                  } else {
+                    var calc = ((quiz["calificacion"] * tiempo) / 10) * 4;
+                    calc = calc.toFixed(2);
+                    document.getElementById("res-eficacia").style.display =
+                      "block";
+                    document.getElementById("res-tiempo").innerHTML = tiempo;
+                    document.getElementById("res-eficiacia-val").innerHTML = calc;
+                  }
+                }
+              </script>
+            </p>
+  
+            <form name="calc-eficiencia" action="javascript:validateEfi();">
+              Introduce el tiempo que has dedicado a estudiar este examen:
+              <input type="text" name="tiempo" id="tiempo" required />
+              <input type="submit" class="custom-btn text-uppercase fw-bold" value="Calcular" />
+            </form>
+  
+            <br />
+            <p style="display: none" id="res-eficacia">
+              La eficiencia para este examen es:
+              <strong
+                ><span>&#40;</span>
+                <span th:text="${quiz.getCalificacion()}">8</span>*
+                <span id="res-tiempo"></span> <span>&#41;</span> /
+                <span>&#40;</span>10*4 <span>&#41;</span> =
+                <span id="res-eficiacia-val">7</span></strong
+              >
+            </p>
+            <br />
+            <p>
+              El resultado obtenido representa un ratio entre tus resultados
+              reales y los ideales. El mejor resultado posible sería tener un
+              valor de 1 o menor ya que eso querría decir que tus resultados en
+              comparación con el tiempo que le has dedicado a estudiar son muy
+              buenos. Obtener resultados al rededorde 2 a 4 indica que aunque los
+              resultados no son los más optimos estás trabajando bien y obteniendo
+              resultados buenos. ¡No te desanimes!
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+    
   </body>
 </html>
